@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 136736413222030108}
   - component: {fileID: 54623810486803998}
   - component: {fileID: 195200434237430636}
-  - component: {fileID: 114106194699345654}
+  - component: {fileID: 114254235466795906}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -128,7 +128,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!114 &114106194699345654
+--- !u!114 &114254235466795906
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -142,11 +142,13 @@ MonoBehaviour:
   maxhealth: 3
   currentHealth: 0
   damage: 1
-  moveSpeed: 200
-  chargeSpeedMultiplyer: 5
-  totalChargeTime: 1.5
-  aggroDis: 5
-  totalStallTime: 1
+  moveSpeed: 10
+  waypointHolder: {fileID: 0}
+  bIsCyclicalPath: 0
+  chargeSpeedMultiplyer: 3
+  totalChargeTime: 2
+  aggroDis: 4
+  totalStallTime: 2
 --- !u!136 &136736413222030108
 CapsuleCollider:
   m_ObjectHideFlags: 1
