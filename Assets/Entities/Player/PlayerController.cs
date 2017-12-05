@@ -6,7 +6,9 @@ using UnityEngine;
 [RequireComponent (typeof (Rigidbody), (typeof (WeaponContoller)))]
 public class PlayerController : LivingEntity {
 
-    Vector3 velocity;
+    [SerializeField] float moveSpeed = 200.0f;
+
+    Vector3 moveDir;
     Rigidbody myRb;
     WeaponContoller weaponContoller;
 
@@ -16,14 +18,14 @@ public class PlayerController : LivingEntity {
         weaponContoller = GetComponent<WeaponContoller>();
 	}
 
-    public void Move(Vector3 moveVelocity)
+    public void Move(Vector3 movementDir)
     {
-        velocity = moveVelocity;
+        moveDir = movementDir;
     }
 
     private void FixedUpdate()
     {
-        myRb.velocity = ( (velocity * 100) * Time.fixedDeltaTime);
+        myRb.velocity = ( (moveDir * moveSpeed) * Time.fixedDeltaTime);
     }
 
     public void LookAt(Vector3 lookPoint)

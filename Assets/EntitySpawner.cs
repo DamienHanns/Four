@@ -23,12 +23,19 @@ public class EntitySpawner : MonoBehaviour {
     {
         if (objectsRemainingToSpawn > 0 && Time.time > nextSpawnTime)
         {
+            SpawnObject();
+        }
+    }
+
+    void SpawnObject()
+    {
             objectsRemainingToSpawn--;
             nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;
 
-            Transform spawnedObject = Instantiate(objectToSpawn, Vector3.zero, Quaternion.identity);
+            Transform spawnedObject = Instantiate(objectToSpawn, transform.position, Quaternion.identity);
 
-            if (currentWave.whenToSpawnNextWave == Wave.WhenToSpawnWave.OnWaveClear)        //decide when to call next wave
+            //decide when to call next wave
+            if (currentWave.whenToSpawnNextWave == Wave.WhenToSpawnWave.OnWaveClear)       
             {
                 LivingEntity isLivingEntity = spawnedObject.GetComponent<LivingEntity>();       //Apply delegate if its a living entity
                 if (isLivingEntity)
@@ -36,7 +43,6 @@ public class EntitySpawner : MonoBehaviour {
                     isLivingEntity.OnDeath += OnObjectDestruction;
                 }
             }
-        }
     }
 
     void CallNextWave()     //TODO place timer function on this method or to call this method. Create SpawnNow functionality to call this method.

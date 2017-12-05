@@ -4,9 +4,7 @@ using UnityEngine;
 
 [RequireComponent (typeof (PlayerController))]
 public class PlayerInput : MonoBehaviour {
-
-    public float moveSpeed = 10.0f;
-
+    
     PlayerController playerController;
     Camera mainCam;
 
@@ -18,8 +16,8 @@ public class PlayerInput : MonoBehaviour {
 
     void Update () {
         Vector3 moveInput = new Vector3(Input.GetAxisRaw ("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        Vector3 moveVelocity = moveInput.normalized * moveSpeed;
-        playerController.Move(moveVelocity );
+        Vector3 moveDir = moveInput.normalized;
+        playerController.Move(moveDir );
 
         Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
         Plane ground = new Plane(Vector3.up, Vector3.zero);
