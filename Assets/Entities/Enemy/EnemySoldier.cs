@@ -10,8 +10,9 @@ public class EnemySoldier : Enemy {
     enum State { Attacking, Chasing, Patroling };
     State state;
 
+    [Header("Pathfinding")]
     public float moveSpeed = 10.0f;
-    public Transform waypointHolder;
+    public Transform waypointHolder;        //TODO create data type waypoints for greater customisation of indervidual waypoints
     [SerializeField] bool bIsCyclicalPath;
 
     [Header("Charge Attack Settings")]
@@ -30,7 +31,11 @@ public class EnemySoldier : Enemy {
         myRb = GetComponent<Rigidbody>();
         pathfinder = GetComponent<NavMeshAgent>();
         currentTarget = FindObjectOfType<PlayerController>().transform;
+        
+        pathfinder.speed = moveSpeed;
+
         state = State.Patroling;
+
         Vector3[] startingWaypoints = GetWaypoints();
         StartCoroutine(UpdatePath(startingWaypoints));
     }
@@ -39,7 +44,7 @@ public class EnemySoldier : Enemy {
     {
         if (currentTarget != null)
         {
-            if (disToTarget < aggroDis && state != State.Attacking && Time.time > timeToNextAttack)    //TODO is the bool check than the enum? 
+            if (disToTarget < aggroDis && state != State.Attacking && Time.time > timeToNextAttack)    //TODO is the bool check better than the enum? 
             {
                 bIsAttackingTarget = true;                              //set attacking variables
                 stallTimer = totalStallTime + Time.time;
@@ -51,7 +56,6 @@ public class EnemySoldier : Enemy {
 
                 StartCoroutine(InitateAttack(dirToTarget));
             }
-
         }
     }
 
@@ -101,40 +105,61 @@ public class EnemySoldier : Enemy {
         print(state);
     }
 
-    IEnumerator UpdatePath(Vector3[] waypoints)
+    IEnumerator UpdatePath(Vector3[] waypoints)    
     {
         float repathTime = 0.25f;
-        transform.position = waypoints[0];
+        transform.position = waypoints[0];          
 
         int nextWaypointIndex = 1;
         Vector3 nextWaypoint = waypoints[nextWaypointIndex];
+        float pauseTime = 3.0f;
 
         while (currentTarget != null)
         {
             float stoppingDis = 0.1f;       //TODO need to take into account faraway ypos if ground is raised or lowered.
             disToTarget = Vector3.Distance(transform.position, currentTarget.position);
-            
+
             switch (state)
             {
                 case State.Patroling:
-                    pathfinder.SetDestination(nextWaypoint);
-
                     if (Vector3.Distance(transform.position, nextWaypoint) < stoppingDis)
                     {
-                        nextWaypointIndex = (nextWaypointIndex + 1) % waypoints.Length;
-                        nextWaypoint = waypoints[nextWaypointIndex];
-                        
+                        if (bIsCyclicalPath)             //TODO switch on and off after a number patrols to introduce randomness
+                        {
+                            nextWaypointIndex++;
+
+                            if (nextWaypointIndex >= waypoints.Length)
+                            {
+                                nextWaypointIndex = 0;
+                                yield return new WaitForSeconds(pauseTime);
+                            }
+                            nextWaypoint = waypoints[nextWaypointIndex];
+                        }
+                        else 
+                        {
+                            nextWaypointIndex++;
+
+                            if (nextWaypointIndex >= waypoints.Length)
+                            {
+                                nextWaypointIndex = 0;
+                                System.Array.Reverse(waypoints);
+                                yield return new WaitForSeconds(pauseTime);
+                            }
+                            nextWaypoint = waypoints[nextWaypointIndex];
+                        }
                     }
                     break;
 
                 case State.Chasing:
-                    pathfinder.SetDestination(currentTarget.position);
+                    nextWaypoint = currentTarget.position;
                     break;
 
                 default:
                     Debug.Log("Pathfinding Switch for " + gameObject.name + " out of range");
                     break;
             }
+            pathfinder.SetDestination(nextWaypoint);
+
             yield return new WaitForSeconds(repathTime);
 
         }
@@ -154,7 +179,7 @@ public class EnemySoldier : Enemy {
         }
         return null;
         
-    }       //TODO change this to return a list from the array
+    }       
 
     void OnDrawGizmos()
     {
