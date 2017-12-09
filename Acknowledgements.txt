@@ -1,0 +1,9 @@
+Thanks to great tutorials from: 
+
+Sebastian Lague found on youtube, https://www.youtube.com/channel/UCmtyQOKKmrMVaKuRXz02jbQ 
+
+Ben Tristem and his cohort of merry nerds found on Udemy and their forums at gamedev.tv
+Link for Ben at Udemy, https://www.udemy.com/user/bentristem
+
+
+Without which this project would not be possible.

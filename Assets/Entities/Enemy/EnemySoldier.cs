@@ -183,8 +183,8 @@ public class EnemySoldier : Enemy {
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, aggroDis);
+   //     Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(transform.position, aggroDis);
 
         if (waypointHolder != null)     
         {
