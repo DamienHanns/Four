@@ -22,26 +22,30 @@ public class EnemySoldier : Enemy {
     float disToTarget;
     bool bIsAttackingTarget;
 
-    NavMeshAgent pathfinder;
+    NavMeshAgent pathfinder;    FOV fOV;
     Rigidbody myRb;
     Transform currentTarget;
 
     protected override void Start() {
         base.Start();
         myRb = GetComponent<Rigidbody>();
-        pathfinder = GetComponent<NavMeshAgent>();
-        currentTarget = FindObjectOfType<PlayerController>().transform;
+        pathfinder = GetComponent<NavMeshAgent>();  fOV = GetComponent<FOV>();
         
         pathfinder.speed = moveSpeed;
 
         state = State.Patroling;
 
-        Vector3[] startingWaypoints = GetWaypoints();
-        StartCoroutine(UpdatePath(startingWaypoints));
+        if (waypointHolder != null)
+        {
+            print("waypoint holder not null");
+            Vector3[] startingWaypoints = GetWaypoints();
+            StartCoroutine(UpdatePath(startingWaypoints));
+        } 
     }
 
-    void Update()
+    void Update()       //TODO react if attacked.
     {
+        CheckForTargets();
         if (currentTarget != null)
         {
             if (disToTarget < aggroDis && state != State.Attacking && Time.time > timeToNextAttack)    //TODO is the bool check better than the enum? 
@@ -51,13 +55,42 @@ public class EnemySoldier : Enemy {
                 state = State.Attacking;
                 Vector3 dirToTarget = (currentTarget.position - transform.position).normalized;        //normalise to keep consistance speed when passed to co-rutine
 
-                pathfinder.isStopped = true;                            //disable pathfinder stuff before moving with rb;
+                if (pathfinder.isOnNavMesh) { pathfinder.isStopped = true;  }      //disable pathfinder stuff before moving with rb;
                 pathfinder.enabled = false;
 
                 StartCoroutine(InitateAttack(dirToTarget));
             }
         }
     }
+
+    Vector3[] GetWaypoints()
+    {
+            if (waypointHolder != null)
+        {
+            Vector3[] waypoints = new Vector3[waypointHolder.childCount];
+            for (int i = 0; i < waypoints.Length; ++i)
+            {
+                waypoints[i] = waypointHolder.GetChild(i).position;
+                waypoints[i] = new Vector3(waypoints[i].x, transform.position.y, waypoints[i].z);  
+            }
+            return waypoints;
+        }
+        return null;
+        
+    }       
+
+    void CheckForTargets()
+        {
+            //check list from FOV 
+
+            foreach (Transform target in fOV.visableTagets)
+            {
+                if (target != null)
+                {
+                    if (target.tag == "Player") { currentTarget = target; }
+                }
+            }
+        }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -107,18 +140,19 @@ public class EnemySoldier : Enemy {
 
     IEnumerator UpdatePath(Vector3[] waypoints)    
     {
-        float repathTime = 0.25f;
-        transform.position = waypoints[0];          
-
+        float repathTime = 0.25f;  
+        pathfinder.Warp(waypoints[0]);
+        
         int nextWaypointIndex = 1;
         Vector3 nextWaypoint = waypoints[nextWaypointIndex];
         float pauseTime = 3.0f;
 
-        while (currentTarget != null)
+        while (true)    //TODO swtich to a bool so corutine comes to an end if new set of way points arer desired.  
         {
             float stoppingDis = 0.1f;       //TODO need to take into account faraway ypos if ground is raised or lowered.
-            disToTarget = Vector3.Distance(transform.position, currentTarget.position);
 
+            if (currentTarget != null) { disToTarget = Vector3.Distance(transform.position, currentTarget.position) ; }
+           
             switch (state)
             {
                 case State.Patroling:
@@ -151,40 +185,33 @@ public class EnemySoldier : Enemy {
                     break;
 
                 case State.Chasing:
-                    nextWaypoint = currentTarget.position;
+                    if (currentTarget != null)
+                    {
+                        nextWaypoint = currentTarget.position;
+                    }
+                    else
+                    {
+                        state = State.Patroling;
+                    }
                     break;
 
                 default:
                     Debug.Log("Pathfinding Switch for " + gameObject.name + " out of range");
                     break;
             }
-            pathfinder.SetDestination(nextWaypoint);
-
+            if (pathfinder.isOnNavMesh)
+            {
+                pathfinder.SetDestination(nextWaypoint);
+            }
             yield return new WaitForSeconds(repathTime);
 
         }
     }
 
-    Vector3[] GetWaypoints()
-    {
-            if (waypointHolder != null)
-        {
-            Vector3[] waypoints = new Vector3[waypointHolder.childCount];
-            for (int i = 0; i < waypoints.Length; ++i)
-            {
-                waypoints[i] = waypointHolder.GetChild(i).position;
-                waypoints[i] = new Vector3(waypoints[i].x, transform.position.y, waypoints[i].z);  
-            }
-            return waypoints;
-        }
-        return null;
-        
-    }       
-
     void OnDrawGizmos()
     {
-   //     Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(transform.position, aggroDis);
+       Gizmos.color = Color.red;
+       Gizmos.DrawWireSphere(transform.position, aggroDis);
 
         if (waypointHolder != null)     
         {
@@ -203,6 +230,5 @@ public class EnemySoldier : Enemy {
 
             if (bIsCyclicalPath) { Gizmos.DrawLine(privousPos, startPos); }
         }
-
     } 
 }

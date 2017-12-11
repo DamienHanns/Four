@@ -1101,7 +1101,7 @@ Prefab:
     - target: {fileID: 114254235466795906, guid: 790d67250f167664581422bc0b4d8a4d,
         type: 2}
       propertyPath: moveSpeed
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 114254235466795906, guid: 790d67250f167664581422bc0b4d8a4d,
         type: 2}
@@ -1938,6 +1938,30 @@ Transform:
   m_PrefabParentObject: {fileID: 4857600876629852, guid: f2cd45e68c90e134b8f96463cb714840,
     type: 2}
   m_PrefabInternal: {fileID: 623842815}
+--- !u!1 &2043974222 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1013144447458144, guid: 790d67250f167664581422bc0b4d8a4d,
+    type: 2}
+  m_PrefabInternal: {fileID: 1111331737}
+--- !u!114 &2043974223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2043974222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d0f090f7521dd84db7e968bae535265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewRadius: 4.49
+  viewAngle: 360
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 512
+  obsticleMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!1 &2056138462
 GameObject:
   m_ObjectHideFlags: 0

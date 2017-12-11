@@ -11,6 +11,7 @@ public class FOV : MonoBehaviour {
     [SerializeField] LayerMask obsticleMask;
 
     internal List<Transform> visableTagets = new List<Transform>();
+    internal bool bIsTargetInLOS;
 
     private void Start()
     {
@@ -29,8 +30,9 @@ public class FOV : MonoBehaviour {
 
     void FindVisableTargets()
     {
+        bIsTargetInLOS = false;
         visableTagets.Clear();
-
+       
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
         for (int i = 0; i < targetsInViewRadius.Length; ++i)
@@ -44,7 +46,8 @@ public class FOV : MonoBehaviour {
                 if ( ! Physics.Raycast(transform.position, dirToTarget, disToTarget, obsticleMask))
                 {
                     visableTagets.Add(target);
-                } 
+                    bIsTargetInLOS = true;
+                }
             }
         }
     }
