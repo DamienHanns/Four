@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FOV : MonoBehaviour {
+public class FOV : MonoBehaviour {      //TODO rename to display FOV
 
-    [SerializeField] internal float viewRadius;
-    [SerializeField] [Range (0.0f, 360.0f)] internal float viewAngle;
+    [SerializeField] public float viewRadius;
+    [SerializeField] [Range (0.0f, 360.0f)] public float viewAngle;
 
     [SerializeField] LayerMask targetMask;
     [SerializeField] LayerMask obsticleMask;
 
-    internal List<Transform> visableTagets = new List<Transform>();
-    internal bool bIsTargetInLOS;
+    public List<Transform> visableTagets = new List<Transform>();
+    public  bool bIsTargetInLOS;
 
     private void Start()
     {

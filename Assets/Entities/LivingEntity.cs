@@ -9,7 +9,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
     public float maxhealth = 3.0f;
 
     [SerializeField] protected float currentHealth;
-    protected bool bIsDead;
+    [SerializeField]  protected bool bIsDead;
 
     protected virtual void Start()
     {
@@ -40,7 +40,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
     {
         bIsDead = true;
         if (OnDeath != null) { OnDeath(); }
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
 }
