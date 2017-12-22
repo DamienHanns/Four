@@ -12,23 +12,34 @@ public class PatrolAction : Action
         if ( ! controller.bHasPath)  { StartCoroutine(Patrol(controller)); }
     }
 
+    void GoToNextWaypoint(StateController controller, Vector3 nextWaypoint)
+    {
+        if (controller.navMeshAgent.isOnNavMesh)
+        {
+            controller.navMeshAgent.SetDestination(nextWaypoint);
+        }
+        else
+        {
+            print(gameObject.name + " is not on nav mesh");
+        }
+    }
+
     IEnumerator Patrol(StateController controller)
     {
         float repathTime = 0.25f;
-        //  pathfinder.Warp(waypoints[0]);
 
         Vector3 nextWaypoint = controller.waypoints[controller.nextWaypointIndex];
+        Vector3 previousWaypoint = Vector3.zero;
 
         controller.bHasPath = true;
-        while (controller.bHasPath) 
+        while (controller.bHasPath)
         {
-            float disToNextWaypoint = Vector3.Distance(controller.transform.position, nextWaypoint);
+            //   float disToNextWaypoint = Vector3.Distance(controller.transform.position, nextWaypoint);
 
-            if (disToNextWaypoint <= controller.navMeshAgent.stoppingDistance)
+            if (controller.navMeshAgent.remainingDistance <= controller.navMeshAgent.stoppingDistance)
             {
                 if (controller.bIsCyclicalPath)             //TODO switch on and off after a number patrols to introduce randomness
                 {
-                    int priviousWaypointIndex = controller.nextWaypointIndex;
                     controller.nextWaypointIndex++;
 
                     if (controller.nextWaypointIndex >= controller.waypoints.Length)
@@ -38,6 +49,7 @@ public class PatrolAction : Action
                     }
 
                     nextWaypoint = controller.waypoints[controller.nextWaypointIndex];
+                    GoToNextWaypoint(controller, nextWaypoint);
 
                 }
                 else
@@ -51,19 +63,8 @@ public class PatrolAction : Action
                         yield return new WaitForSeconds(pauseTimeAtEndOfRoute);
                     }
                     nextWaypoint = controller.waypoints[controller.nextWaypointIndex];
-
+                    GoToNextWaypoint(controller, nextWaypoint);
                 }
-               
-            }
-
-            if (controller.navMeshAgent.velocity.magnitude < 0.1f) { controller.navMeshAgent.SetDestination(nextWaypoint); }
-
-            if (controller.navMeshAgent.isOnNavMesh)
-            {
-                controller.navMeshAgent.SetDestination(nextWaypoint);
-            } else
-            {
-                print(gameObject.name + " is not on nav mesh");
             }
             yield return new WaitForSeconds(repathTime);
 

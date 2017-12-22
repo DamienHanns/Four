@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4547961172179046}
   - component: {fileID: 114272096010577070}
   m_Layer: 0
-  m_Name: GuardChaseState
+  m_Name: ChargerChaseState
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

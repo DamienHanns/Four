@@ -17,7 +17,7 @@ public class DistanceDicision : Decision {
     {
         float disToTarget = Vector3.Distance(controller.transform.position, controller.priorityOOI.position);
 
-        if (disToTarget < attackingDistance)
+        if (disToTarget < attackingDistance && controller.priorityOOI.gameObject.activeSelf != false) 
         {
             return true;
         }

@@ -9,7 +9,7 @@ public class ActionEndedDecision : Decision {
 
     public override bool Decide(StateController controller)
     {
-        bool actionEnded = action.bIsAttackingTarget;
+        bool actionEnded = action.bIsCharging;
         return actionEnded;
     }
 }

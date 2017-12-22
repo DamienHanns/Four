@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114809945628718076}
   - component: {fileID: 114676422273903120}
   m_Layer: 0
-  m_Name: GuardAttackingState
+  m_Name: ChargerAttackingState
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,7 +35,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1417264458232564}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.201923, y: -4.5414124, z: -4.0858536}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -52,13 +52,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abedeb1f3570c2c46a319c8a6af6e3ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stallTimer: 2
+  bIsActionFinished: 0
+  totalStallTime: 1.5
   totalChargeTime: 2
   chargeSpeedMultiplyer: 10
-  chargeTimer: 0
-  bIsAttackingTarget: 0
-  timeToNextAttack: 0
-  attackCD: 10
+  bIsCharging: 0
 --- !u!114 &114809945628718076
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -71,6 +69,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 114676422273903120}
+  - {fileID: 0}
   transitions: []
-  stateIndicatorColour: {r: 0, g: 0, b: 0, a: 0}
+  stateIndicatorColour: {r: 0.5441177, g: 0, b: 0, a: 0}

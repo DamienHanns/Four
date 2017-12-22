@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargeAtAnObjectAction : Action {
+public class ChargeAtAnObjectAction : Action
+{
 
     [SerializeField] float totalStallTime = 1.5f;
     float stallTimer = 0.0f;
@@ -11,7 +12,7 @@ public class ChargeAtAnObjectAction : Action {
     [SerializeField] float chargeSpeedMultiplyer = 10.0f;
     float chargeTimer;
     float waitTimer = 0.0f;
-    public bool bIsAttackingTarget;
+    public bool bIsCharging;
 
     public override void Act(StateController controller)
     {
@@ -20,15 +21,18 @@ public class ChargeAtAnObjectAction : Action {
 
     void ChargeAtObject(StateController controller)
     {
-        if (!bIsAttackingTarget && Time.time > waitTimer) StartCoroutine (InitateAttack(controller));
+        if (!bIsCharging && Time.time > waitTimer) StartCoroutine(InitateAttack(controller));
     }
 
-     IEnumerator InitateAttack(StateController controller)
+    IEnumerator InitateAttack(StateController controller)
     {
+        bIsActionFinished = false;
+        if (controller.priorityOOI.gameObject.activeSelf != false)
+        {
             Vector3 dirToTarget = controller.priorityOOI.position - controller.transform.position;
 
             stallTimer = totalStallTime + Time.time;
-            bIsAttackingTarget = true;
+            bIsCharging = true;
             controller.navMeshAgent.enabled = false;
 
             while (stallTimer > Time.time)
@@ -37,6 +41,7 @@ public class ChargeAtAnObjectAction : Action {
             }
             chargeTimer = totalChargeTime + Time.time;
             StartCoroutine(ChargeTarget(controller, dirToTarget));
+        }
     }
 
     IEnumerator ChargeTarget(StateController controller, Vector3 dirToTarget)
@@ -45,6 +50,8 @@ public class ChargeAtAnObjectAction : Action {
         Vector3 chargeVelocity = ((velocity) * chargeSpeedMultiplyer);
 
         controller.myrb.isKinematic = false;
+        controller.myrb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
         while (chargeTimer > Time.time)
         {
             controller.myrb.velocity = (chargeVelocity * Time.fixedDeltaTime);
@@ -53,13 +60,17 @@ public class ChargeAtAnObjectAction : Action {
 
         waitTimer = 100.0f + Time.time;
 
+        controller.myrb.collisionDetectionMode = CollisionDetectionMode.Discrete;
         controller.myrb.isKinematic = true;
-        bIsAttackingTarget = false;
+        bIsCharging = false;
+        bIsActionFinished = true;
         controller.navMeshAgent.enabled = true;
     }
 
     private void OnDisable()
     {
         waitTimer = 0.0f;
+        bIsActionFinished = true;
     }
+
 }

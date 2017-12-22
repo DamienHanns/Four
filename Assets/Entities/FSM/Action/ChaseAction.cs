@@ -27,6 +27,8 @@ public class ChaseAction : Action {
         }
     }
 
+    //checkLOS;
+
     private void OnDisable()
     {
         StopAllCoroutines();

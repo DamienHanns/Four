@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GuardPatrolState : State {
+public class ChargerPatrolState : State {
 
     
 }

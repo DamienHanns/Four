@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GuardAttackingState : State {
-    
+public class ChargerChaseState : State {
+
 }
